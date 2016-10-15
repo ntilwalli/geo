@@ -122,8 +122,11 @@ defmodule Geo.Ecto.Test do
     result = hd(results)
 
     json = Geo.JSON.encode(%Geo.Point{ coordinates: {31, -90}, srid: 4326})
+    required_fields = [:name, :geom]
+    changeset = result
+      |> Ecto.Changeset.cast(%{title: "Hello", geom: json}, required_fields)
+      |> Ecto.Changeset.validate_required(required_fields)
 
-    changeset = Ecto.Changeset.cast(result, %{title: "Hello", geom: json}, ~w(name geom), ~w())
     assert changeset.changes == %{geom: %Geo.Point{coordinates: {31, -90}, srid: 4326}}
   end
 
@@ -135,12 +138,15 @@ defmodule Geo.Ecto.Test do
     results = Repo.all(query)
 
     result = hd(results)
-
+    required_fields = [:name, :geom]
     json = %{ "type" => "Point",
               "crs" => %{ "type" => "name", "properties" => %{"name" => "EPSG4326" } },
               "coordinates" => [31, -90] }
 
-    changeset = Ecto.Changeset.cast(result, %{title: "Hello", geom: json}, ~w(name geom), ~w())
+    changeset = result
+      |> Ecto.Changeset.cast(%{title: "Hello", geom: json}, required_fields)
+      |> Ecto.Changeset.validate_required(required_fields)
+
     assert changeset.changes == %{geom: %Geo.Point{coordinates: {31, -90}, srid: 4326}}
   end
 
@@ -160,26 +166,39 @@ defmodule Geo.Ecto.Test do
   end
 
 
-  defimpl Ecto.DataType, for: Map do
-    def cast(%{"latitude" => lat, "longitude" => long}, Geo.Point) do
-      {:ok, %Geo.Point{coordinates: {lat, long}, srid: 4326}}
-    end
-    def cast(_, _), do: :error
-  end
+  # defimpl Ecto.DataType, for: Map do
+  #   def cast(%{"latitude" => lat, "longitude" => long}, Geo.Point) do
+  #     IO.puts "cast success"
+  #     {:ok, %Geo.Point{coordinates: {lat, long}, srid: 4326}}
+  #   end
+  #   def cast(_, _)do 
+  #     IO.puts "cast error"
+  #     :error
+  #   end
+  #   def dump(_) do
+  #     :error
+  #   end
+  # end
 
 
-  test "defimpl Ecto.DataType" do
-    geom = %Geo.Point{ coordinates: {30, -90}, srid: 4326}
+  # test "defimpl Ecto.DataType" do
+  #   geom = %Geo.Point{ coordinates: {30, -90}, srid: 4326}
 
-    Repo.insert(%Geographies{name: "hello", geom: geom})
-    query = from location in Geographies, limit: 5, select: location
-    results = Repo.all(query)
+  #   Repo.insert(%Geographies{name: "hello", geom: geom})
+  #   query = from location in Geographies, limit: 5, select: location
+  #   results = Repo.all(query)
 
-    result = hd(results)
+  #   result = hd(results)
 
-    changeset = Ecto.Changeset.cast(result, %{title: "Hello", geom: %{"latitude" => 31, "longitude" => -90 }}, ~w(name geom), ~w())
-    assert changeset.changes == %{geom: %Geo.Point{coordinates: {31, -90}, srid: 4326}}
-  end
+  #   IO.inspect result
+
+  #   required_fields = [:name, :geom]
+  #   changeset = result 
+  #     |> Ecto.Changeset.cast(%{title: "Hello", geom: %{"latitude" => 31, "longitude" => -90 }}, required_fields)
+  #     |> Ecto.Changeset.validate_required(required_fields)
+
+  #   assert changeset.changes == %{geom: %Geo.Point{coordinates: {31, -90}, srid: 4326}}
+  # end
 
 
   test "insert multiple geometry types" do

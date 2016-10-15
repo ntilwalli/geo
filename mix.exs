@@ -3,12 +3,13 @@ defmodule Geo.Mixfile do
 
   def project do
     [ app: :geo,
-      version: "1.1.2",
+      version: "1.2.0",
       elixir: "~> 1.0",
       deps: deps,
       description: description,
       package: package,
       name: "Geo",
+      elixir: "~> 1.3",
       consolidate_protocols: Mix.env == :prod,
       source_url: "https://github.com/bryanjos/geo"]
   end
@@ -29,8 +30,8 @@ defmodule Geo.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 1.1 or ~> 2.0", optional: true },
-      {:postgrex, "~> 0.11", optional: true },
+      {:ecto, "2.1.0-rc.2", optional: true },
+      {:postgrex, "~> 0.12", optional: true },
       {:poison, "~> 1.5 or ~> 2.0", optional: true},
       {:earmark, "~> 0.2", only: :dev},
       {:ex_doc, "~> 0.12", only: :dev}
