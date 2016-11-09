@@ -3,7 +3,7 @@ defmodule Geo.Mixfile do
 
   def project do
     [ app: :geo,
-      version: "1.2.0",
+      version: "1.2.1",
       elixir: "~> 1.0",
       deps: deps,
       description: description,
@@ -32,15 +32,15 @@ defmodule Geo.Mixfile do
     [
       {:ecto, "2.1.0-rc.2", optional: true },
       {:postgrex, "~> 0.12", optional: true },
-      {:poison, "~> 1.5 or ~> 2.0", optional: true},
-      {:earmark, "~> 0.2", only: :dev},
-      {:ex_doc, "~> 0.12", only: :dev}
+      {:poison, "~> 1.5 or ~> 2.0 or ~> 3.0", optional: true},
+      {:earmark, "~> 1.0", only: :dev},
+      {:ex_doc, "~> 0.14", only: :dev}
     ]
   end
 
   defp package do
     [ # These are the default files included in the package
-      files: ["lib", "mix.exs", "README*", "readme*", "LICENSE*", "license*", "CHANGELOG*"],
+      files: ["lib", "mix.exs", "README.md", "CHANGELOG.md"],
       maintainers: ["Bryan Joseph"],
       licenses: ["MIT"],
       links: %{ "GitHub" => "https://github.com/bryanjos/geo" }
